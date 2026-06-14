@@ -1,5 +1,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useI18nStore } from '@/stores/i18nStore'
+
+const { t } = storeToRefs(useI18nStore())
 
 const statsRef = ref(null)
 const counts   = ref([0, 0, 0, 0])
@@ -10,7 +14,6 @@ let observer   = null
 function animateAll() {
   const duration = 1800
   const startTime = performance.now()
-
   function tick(now) {
     const elapsed  = now - startTime
     const progress = Math.min(elapsed / duration, 1)
@@ -42,55 +45,26 @@ onUnmounted(() => observer?.disconnect())
     <div class="grid md:grid-cols-2 gap-16 items-start">
       <!-- Photo placeholder -->
       <div class="aspect-[3/4] rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center">
-        <span class="text-[var(--color-muted)] text-sm">Zdjęcie artysty</span>
+        <span class="text-[var(--color-muted)] text-sm">{{ t.about.photoAlt }}</span>
       </div>
 
       <!-- Bio -->
       <div>
-        <p class="text-primary-400 uppercase tracking-[0.3em] text-sm font-medium mb-3">O mnie</p>
+        <p class="text-primary-400 uppercase tracking-[0.3em] text-sm font-medium mb-3">{{ t.about.label }}</p>
         <h1 class="section-title">Tomasz Kowalski</h1>
-        <p class="text-gold-500 font-serif text-lg mb-8">Pianista</p>
+        <p class="text-gold-500 font-serif text-lg mb-8">{{ t.about.role }}</p>
 
         <div class="space-y-4 text-[var(--color-muted)] leading-relaxed">
-          <p>
-            Tomasz Kowalski – pianista urodzony w Krakowie, absolwent Akademii Muzycznej im. Karola Szymanowskiego
-            w klasie fortepianu. Swoją edukację kontynuował w Hochschule für Musik w Berlinie.
-          </p>
-          <p>
-            Laureat licznych konkursów pianistycznych, m.in. Ogólnopolskiego Konkursu Pianistycznego im. F. Chopina.
-            Koncertuje regularnie w Polsce i za granicą, współpracując z czołowymi orkiestrami i filharmoniami.
-          </p>
-          <p>
-            Jego repertuar obejmuje muzykę baroku, klasycyzmu i romantyzmu, ze szczególnym uwzględnieniem dzieł
-            Fryderyka Chopina, Franza Liszta i Ludwiga van Beethovena.
-          </p>
+          <p v-for="(para, i) in t.about.bio" :key="i">{{ para }}</p>
         </div>
 
-        <!-- Animated facts -->
+        <!-- Animated stats -->
         <div ref="statsRef" class="mt-10 grid grid-cols-2 gap-4">
-          <div class="card text-center">
+          <div v-for="(label, i) in t.about.stats" :key="i" class="card text-center">
             <span class="block text-3xl font-serif text-primary-400 font-bold tabular-nums">
-              {{ counts[0] }}{{ suffixes[0] }}
+              {{ counts[i] }}{{ suffixes[i] }}
             </span>
-            <span class="text-[var(--color-muted)] text-sm mt-1 block">lat na scenie</span>
-          </div>
-          <div class="card text-center">
-            <span class="block text-3xl font-serif text-primary-400 font-bold tabular-nums">
-              {{ counts[1] }}{{ suffixes[1] }}
-            </span>
-            <span class="text-[var(--color-muted)] text-sm mt-1 block">koncertów</span>
-          </div>
-          <div class="card text-center">
-            <span class="block text-3xl font-serif text-primary-400 font-bold tabular-nums">
-              {{ counts[2] }}{{ suffixes[2] }}
-            </span>
-            <span class="text-[var(--color-muted)] text-sm mt-1 block">krajów</span>
-          </div>
-          <div class="card text-center">
-            <span class="block text-3xl font-serif text-primary-400 font-bold tabular-nums">
-              {{ counts[3] }}{{ suffixes[3] }}
-            </span>
-            <span class="text-[var(--color-muted)] text-sm mt-1 block">nagród</span>
+            <span class="text-[var(--color-muted)] text-sm mt-1 block">{{ label }}</span>
           </div>
         </div>
       </div>

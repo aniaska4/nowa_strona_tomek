@@ -1,18 +1,26 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useI18nStore } from '@/stores/i18nStore'
 
-const route = useRoute()
+const route      = useRoute()
+const i18n       = useI18nStore()
+const { t, locale } = storeToRefs(i18n)
 const mobileOpen = ref(false)
 
-const links = [
-  { to: '/',        label: 'Strona główna' },
-  { to: '/about',   label: 'O mnie' },
-  { to: '/news',    label: 'Aktualności' },
-  { to: '/gallery', label: 'Galeria' },
-  { to: '/video',   label: 'Wideo' },
-  { to: '/contact', label: 'Kontakt' },
-]
+const links = computed(() => [
+  { to: '/',        label: t.value.nav.home    },
+  { to: '/about',   label: t.value.nav.about   },
+  { to: '/news',    label: t.value.nav.news    },
+  { to: '/gallery', label: t.value.nav.gallery },
+  { to: '/video',   label: t.value.nav.video   },
+  { to: '/contact', label: t.value.nav.contact },
+])
+
+function toggleLocale() {
+  i18n.setLocale(locale.value === 'pl' ? 'en' : 'pl')
+}
 </script>
 
 <template>
@@ -24,17 +32,29 @@ const links = [
           Tomasz Kowalski
         </RouterLink>
 
-        <!-- Desktop links -->
+        <!-- Desktop links + lang switch -->
         <div class="hidden md:flex items-center gap-6">
           <RouterLink
             v-for="link in links"
             :key="link.to"
             :to="link.to"
             class="text-sm text-[var(--color-muted)] hover:text-white transition-colors"
-            :class="{ 'text-primary-400 !text-primary-400': route.path === link.to }"
+            :class="{ '!text-primary-400': route.path === link.to }"
           >
             {{ link.label }}
           </RouterLink>
+
+          <!-- Language switch -->
+          <button
+            class="flex items-center gap-1 text-xs font-semibold tracking-widest border border-[var(--color-border)] rounded-md px-2.5 py-1 transition-colors hover:border-primary-500 hover:text-white"
+            :class="locale === 'en' ? 'text-primary-400 border-primary-600' : 'text-[var(--color-muted)]'"
+            @click="toggleLocale"
+            :aria-label="locale === 'pl' ? 'Switch to English' : 'Przełącz na Polski'"
+          >
+            <span :class="locale === 'pl' ? 'text-white' : 'text-[var(--color-muted)]'">PL</span>
+            <span class="text-[var(--color-border)]">/</span>
+            <span :class="locale === 'en' ? 'text-white' : 'text-[var(--color-muted)]'">EN</span>
+          </button>
         </div>
 
         <!-- Hamburger -->
@@ -66,6 +86,16 @@ const links = [
         >
           {{ link.label }}
         </RouterLink>
+
+        <!-- Lang switch mobile -->
+        <button
+          class="flex items-center gap-1.5 text-xs font-semibold tracking-widest pt-2 pb-1"
+          @click="toggleLocale"
+        >
+          <span :class="locale === 'pl' ? 'text-white' : 'text-[var(--color-muted)]'">PL</span>
+          <span class="text-[var(--color-border)]">/</span>
+          <span :class="locale === 'en' ? 'text-white' : 'text-[var(--color-muted)]'">EN</span>
+        </button>
       </div>
     </Transition>
   </nav>

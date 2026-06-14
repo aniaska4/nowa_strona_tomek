@@ -1,5 +1,9 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useI18nStore } from '@/stores/i18nStore'
+
+const { t, locale } = storeToRefs(useI18nStore())
 
 const props = defineProps({
   event: { type: Object, default: null },
@@ -8,9 +12,14 @@ const emit = defineEmits(['close'])
 
 const fullDate = computed(() => {
   if (!props.event) return ''
-  return new Date(props.event.date).toLocaleDateString('pl-PL', {
+  return new Date(props.event.date).toLocaleDateString(locale.value === 'en' ? 'en-GB' : 'pl-PL', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   })
+})
+
+const shortMonth = computed(() => {
+  if (!props.event) return ''
+  return new Date(props.event.date).toLocaleDateString(locale.value === 'en' ? 'en-GB' : 'pl-PL', { month: 'short' })
 })
 
 const isPast = computed(() => {
@@ -53,7 +62,7 @@ onUnmounted(() => document.removeEventListener('keydown', onKey))
                     {{ new Date(event.date).getDate() }}
                   </span>
                   <span class="block text-xs text-[var(--color-muted)] uppercase tracking-wider mt-1">
-                    {{ new Date(event.date).toLocaleDateString('pl-PL', { month: 'short' }) }}
+                    {{ shortMonth }}
                   </span>
                   <span class="block text-xs text-[var(--color-muted)] mt-0.5">
                     {{ new Date(event.date).getFullYear() }}
@@ -62,10 +71,10 @@ onUnmounted(() => document.removeEventListener('keydown', onKey))
 
                 <div>
                   <span v-if="isPast" class="inline-block text-xs text-[var(--color-muted)] border border-[var(--color-border)] rounded-full px-2 py-0.5 mb-2">
-                    Archiwum
+                    {{ t.modal.archive }}
                   </span>
                   <span v-else class="inline-block text-xs text-primary-400 border border-primary-700 rounded-full px-2 py-0.5 mb-2">
-                    Nadchodzące
+                    {{ t.modal.upcoming }}
                   </span>
                   <h2 class="font-serif text-xl text-white leading-snug">{{ event.title }}</h2>
                 </div>
@@ -74,7 +83,7 @@ onUnmounted(() => document.removeEventListener('keydown', onKey))
               <button
                 class="shrink-0 text-[var(--color-muted)] hover:text-white transition-colors"
                 @click="emit('close')"
-                aria-label="Zamknij"
+                :aria-label="t.modal.close"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

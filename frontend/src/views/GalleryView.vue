@@ -1,10 +1,13 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useGalleryStore } from '@/stores/galleryStore'
+import { useI18nStore } from '@/stores/i18nStore'
 import GalleryItem from '@/components/ui/GalleryItem.vue'
 
+const { t } = storeToRefs(useI18nStore())
 const galleryStore = useGalleryStore()
-const activeIndex  = ref(null)   // null = zamknięty
+const activeIndex  = ref(null)
 
 const isOpen  = computed(() => activeIndex.value !== null)
 const current = computed(() => galleryStore.items[activeIndex.value])
@@ -35,7 +38,6 @@ function onKey(e) {
   if (e.key === 'ArrowRight') next()
 }
 
-// Swipe support
 let touchStartX = 0
 function onTouchStart(e) { touchStartX = e.touches[0].clientX }
 function onTouchEnd(e) {
@@ -49,13 +51,13 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
 <template>
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-    <p class="text-primary-400 uppercase tracking-[0.3em] text-sm font-medium mb-3">Galeria</p>
-    <h1 class="section-title">Zdjęcia</h1>
-    <p class="section-subtitle">Fotografie z koncertów i wydarzeń muzycznych</p>
+    <p class="text-primary-400 uppercase tracking-[0.3em] text-sm font-medium mb-3">{{ t.gallery.label }}</p>
+    <h1 class="section-title">{{ t.gallery.title }}</h1>
+    <p class="section-subtitle">{{ t.gallery.subtitle }}</p>
 
-    <div v-if="galleryStore.loading" class="text-[var(--color-muted)]">Ładowanie...</div>
+    <div v-if="galleryStore.loading" class="text-[var(--color-muted)]">{{ t.gallery.loading }}</div>
     <div v-else-if="galleryStore.items.length === 0" class="text-[var(--color-muted)]">
-      Galeria jest pusta.
+      {{ t.gallery.empty }}
     </div>
     <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
       <GalleryItem
@@ -84,7 +86,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
           <button
             class="text-white/60 hover:text-white transition-colors p-1"
             @click="close"
-            aria-label="Zamknij"
+            :aria-label="t.modal.close"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
@@ -98,7 +100,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
           <button
             class="absolute left-2 md:left-4 text-white/50 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
             @click="prev"
-            aria-label="Poprzednie"
+            aria-label="Previous"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
@@ -121,7 +123,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
           <button
             class="absolute right-2 md:right-4 text-white/50 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
             @click="next"
-            aria-label="Następne"
+            aria-label="Next"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
