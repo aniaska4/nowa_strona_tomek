@@ -17,9 +17,7 @@ export const useGalleryStore = defineStore('gallery', () => {
   }
 
   async function uploadPhoto(formData) {
-    const { data } = await api.post('/gallery', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    const { data } = await api.post('/gallery', formData)
     items.value.unshift(data)
     return data
   }

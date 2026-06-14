@@ -22,5 +22,17 @@ app.use('/api/contact', require('./routes/contact'))
 // Health check
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }))
 
+// Global error handler (catches multer errors, auth errors, etc.)
+app.use((err, req, res, _next) => {
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(413).json({ error: 'Plik jest za duży (max 25 MB)' })
+  }
+  if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+    return res.status(400).json({ error: 'Nieoczekiwane pole pliku' })
+  }
+  console.error('Server error:', err.message)
+  res.status(err.status || 500).json({ error: err.message || 'Błąd serwera' })
+})
+
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`))

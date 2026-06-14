@@ -5,7 +5,10 @@
       "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/health\" -Method GET)",
       "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/events?type=upcoming\" -Method GET)",
       "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/events?type=upcoming\")",
-      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/events?type=archive\")"
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/events?type=archive\")",
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/health\" 2>&1)",
+      "PowerShell(Start-Sleep -Seconds 3; \\(Invoke-WebRequest -Uri \"http://localhost:5173\" -UseBasicParsing\\).StatusCode)",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -eq \"\" } | Stop-Process -Force; Start-Sleep -Seconds 1; Write-Host \"done\")"
     ]
   }
 }

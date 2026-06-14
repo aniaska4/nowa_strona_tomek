@@ -90,8 +90,11 @@ async function uploadPhoto() {
     photoCaption.value = ''
     photoInput.value.value = ''
     photoMsg.value = 'Dodano!'
-  } catch {
-    photoMsg.value = 'Błąd podczas uploadu.'
+  } catch (err) {
+    const status = err?.response?.status
+    const msg    = err?.response?.data?.error || err?.message || 'nieznany błąd'
+    photoMsg.value = `Błąd ${status ?? ''}: ${msg}`
+    console.error('Upload error:', err)
   }
 }
 
