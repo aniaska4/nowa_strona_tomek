@@ -29,7 +29,7 @@ function toggleLocale() {
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
         <RouterLink to="/" class="font-serif text-xl text-white tracking-wide hover:text-primary-400 transition-colors">
-          Tomasz Kowalski
+          Tomasz Domański
         </RouterLink>
 
         <!-- Desktop links + lang switch -->

@@ -8,7 +8,7 @@ const { t } = storeToRefs(useI18nStore())
 <template>
   <footer class="border-t border-[var(--color-border)] bg-[var(--color-surface)] py-10 mt-20">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-      <p class="font-serif text-white text-lg">Tomasz Kowalski</p>
+      <p class="font-serif text-white text-lg">Tomasz Domański</p>
       <p class="text-[var(--color-muted)] text-sm">
         &copy; {{ new Date().getFullYear() }} {{ t.footer.rights }}
       </p>

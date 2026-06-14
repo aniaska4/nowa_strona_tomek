@@ -43,15 +43,19 @@ onUnmounted(() => observer?.disconnect())
 <template>
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
     <div class="grid md:grid-cols-2 gap-16 items-start">
-      <!-- Photo placeholder -->
-      <div class="aspect-[3/4] rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center">
-        <span class="text-[var(--color-muted)] text-sm">{{ t.about.photoAlt }}</span>
+      <!-- Photo -->
+      <div class="aspect-[3/4] rounded-2xl overflow-hidden bg-[var(--color-surface)] border border-[var(--color-border)]">
+        <img
+          :src="'/uploads/1781444286545-33679.jpg'"
+          :alt="t.about.photoAlt"
+          class="w-full h-full object-cover object-top"
+        />
       </div>
 
       <!-- Bio -->
       <div>
         <p class="text-primary-400 uppercase tracking-[0.3em] text-sm font-medium mb-3">{{ t.about.label }}</p>
-        <h1 class="section-title">Tomasz Kowalski</h1>
+        <h1 class="section-title">Tomasz Domański</h1>
         <p class="text-gold-500 font-serif text-lg mb-8">{{ t.about.role }}</p>
 
         <div class="space-y-4 text-[var(--color-muted)] leading-relaxed">

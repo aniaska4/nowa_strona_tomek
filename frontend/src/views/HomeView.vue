@@ -23,7 +23,7 @@ const { t } = storeToRefs(useI18nStore())
 
       <h1 class="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-serif text-white leading-none tracking-tight mb-8">
         Tomasz<br>
-        <span class="text-slate-300">Kowalski</span>
+        <span class="text-slate-300">Domański</span>
       </h1>
 
       <div class="w-20 h-px bg-gold-500 mb-8 opacity-80"></div>
