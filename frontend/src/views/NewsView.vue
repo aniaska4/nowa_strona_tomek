@@ -2,9 +2,11 @@
 import { ref, onMounted } from 'vue'
 import { useEventsStore } from '@/stores/eventsStore'
 import EventCard from '@/components/ui/EventCard.vue'
+import EventModal from '@/components/ui/EventModal.vue'
 
-const eventsStore = useEventsStore()
-const activeTab = ref('upcoming')
+const eventsStore   = useEventsStore()
+const activeTab     = ref('upcoming')
+const selectedEvent = ref(null)
 
 onMounted(() => {
   eventsStore.fetchUpcoming()
@@ -52,6 +54,7 @@ onMounted(() => {
           v-for="event in eventsStore.upcoming"
           :key="event.id"
           :event="event"
+          @open="selectedEvent = $event"
         />
       </div>
     </template>
@@ -66,8 +69,11 @@ onMounted(() => {
           v-for="event in eventsStore.archive"
           :key="event.id"
           :event="event"
+          @open="selectedEvent = $event"
         />
       </div>
     </template>
+
+    <EventModal :event="selectedEvent" @close="selectedEvent = null" />
   </div>
 </template>

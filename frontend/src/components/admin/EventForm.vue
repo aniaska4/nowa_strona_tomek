@@ -13,11 +13,12 @@ const form = reactive({
   venue:       '',
   city:        '',
   description: '',
+  url:         '',
 })
 
 watch(() => props.initial, (val) => {
   if (val) Object.assign(form, val)
-  else Object.assign(form, { title: '', date: '', venue: '', city: '', description: '' })
+  else Object.assign(form, { title: '', date: '', venue: '', city: '', description: '', url: '' })
 }, { immediate: true })
 
 function submit() {
@@ -51,6 +52,11 @@ function submit() {
     <div>
       <label class="block text-sm text-[var(--color-muted)] mb-1">Opis</label>
       <textarea v-model="form.description" class="input-field resize-none" rows="3"></textarea>
+    </div>
+
+    <div>
+      <label class="block text-sm text-[var(--color-muted)] mb-1">Link do wydarzenia (opcjonalnie)</label>
+      <input v-model="form.url" type="url" class="input-field" placeholder="https://..." />
     </div>
 
     <div class="flex gap-3">

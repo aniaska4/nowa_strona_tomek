@@ -3,7 +3,9 @@
     "allow": [
       "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/health\" -Method GET 2>&1)",
       "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/health\" -Method GET)",
-      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/events?type=upcoming\" -Method GET)"
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/events?type=upcoming\" -Method GET)",
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/events?type=upcoming\")",
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:3000/api/events?type=archive\")"
     ]
   }
 }

@@ -19,14 +19,14 @@ async function getEvents(req, res) {
 }
 
 async function createEvent(req, res) {
-  const { title, date, venue, city, description } = req.body
+  const { title, date, venue, city, description, url } = req.body
   if (!title || !date || !venue) {
     return res.status(400).json({ error: 'Pola title, date i venue są wymagane' })
   }
   try {
     const result = await db.runAsync(
-      'INSERT INTO events (title, date, venue, city, description) VALUES (?, ?, ?, ?, ?)',
-      [title, date, venue, city || null, description || null]
+      'INSERT INTO events (title, date, venue, city, description, url) VALUES (?, ?, ?, ?, ?, ?)',
+      [title, date, venue, city || null, description || null, url || null]
     )
     const row = await db.getAsync('SELECT * FROM events WHERE id = ?', [result.lastID])
     res.status(201).json(row)
@@ -37,11 +37,11 @@ async function createEvent(req, res) {
 
 async function updateEvent(req, res) {
   const { id } = req.params
-  const { title, date, venue, city, description } = req.body
+  const { title, date, venue, city, description, url } = req.body
   try {
     await db.runAsync(
-      'UPDATE events SET title=?, date=?, venue=?, city=?, description=? WHERE id=?',
-      [title, date, venue, city || null, description || null, id]
+      'UPDATE events SET title=?, date=?, venue=?, city=?, description=?, url=? WHERE id=?',
+      [title, date, venue, city || null, description || null, url || null, id]
     )
     const row = await db.getAsync('SELECT * FROM events WHERE id = ?', [id])
     if (!row) return res.status(404).json({ error: 'Nie znaleziono' })

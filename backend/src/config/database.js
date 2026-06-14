@@ -20,8 +20,12 @@ db.serialize(() => {
     venue       TEXT    NOT NULL,
     city        TEXT,
     description TEXT,
+    url         TEXT,
     created_at  TEXT    DEFAULT (datetime('now'))
   )`)
+
+  // Migration: add url column if missing (safe to run on existing DB)
+  db.run(`ALTER TABLE events ADD COLUMN url TEXT`, () => {})
 
   db.run(`CREATE TABLE IF NOT EXISTS gallery (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,

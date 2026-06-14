@@ -1,20 +1,15 @@
 <script setup>
 defineProps({
-  event: {
-    type: Object,
-    required: true,
-  },
+  event: { type: Object, required: true },
 })
-
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('pl-PL', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-  })
-}
+const emit = defineEmits(['open'])
 </script>
 
 <template>
-  <article class="card hover:border-primary-500 transition-colors group">
+  <article
+    class="card hover:border-primary-500 transition-colors group cursor-pointer"
+    @click="emit('open', event)"
+  >
     <div class="flex items-start gap-4">
       <div class="shrink-0 text-center bg-primary-900/50 rounded-lg px-3 py-2 min-w-[60px]">
         <span class="block text-2xl font-bold text-primary-400 font-serif leading-none">
@@ -34,6 +29,9 @@ function formatDate(dateStr) {
           {{ event.description }}
         </p>
       </div>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 text-[var(--color-border)] group-hover:text-primary-400 transition-colors mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
     </div>
   </article>
 </template>
