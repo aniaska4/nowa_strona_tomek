@@ -4,9 +4,8 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "node --watch src/app.js",
-    "postinstall": "npm rebuild sqlite3"
+    "start": "npm rebuild sqlite3 && node src/app.js",
+    "dev": "node --watch src/app.js"
   },
   "keywords": [],
   "author": "",
