@@ -1,19 +1,20 @@
 #!/bin/bash
 set -e
 
-# ─── Configure these ───────────────────────────────────────────────
-SSH_USER="your_user"          # e.g. ubuntu, root, debian
-SSH_HOST="your.server.ip"     # e.g. 51.210.x.x or yourdomain.com
-APP_DIR="/var/www/pianist"    # path on the server
-# ───────────────────────────────────────────────────────────────────
+# ─── OVH shared hosting (frontend) ────────────────────────────────
+SFTP_USER="tomaszz"
+SFTP_HOST="ftp.cluster130.hosting.ovh.net"
+SFTP_PORT="22"
+REMOTE_DIR="/home/tomaszz/www"   # web root on OVH
+# ──────────────────────────────────────────────────────────────────
 
-echo "Deploying to $SSH_USER@$SSH_HOST..."
+echo "Building frontend..."
+cd frontend
+npm install --silent
+npm run build
+cd ..
 
-ssh "$SSH_USER@$SSH_HOST" << EOF
-  set -e
-  cd $APP_DIR
-  git pull origin master
-  cd frontend && npm install --silent && npm run build
-  pm2 restart pianist
-  echo "Deploy complete."
-EOF
+echo "Uploading to OVH..."
+rsync -avz --delete -e "ssh -p $SFTP_PORT" frontend/dist/ "$SFTP_USER@$SFTP_HOST:$REMOTE_DIR/"
+
+echo "Deploy complete! Site is live at https://tomasz-domanski.com"

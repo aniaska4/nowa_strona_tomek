@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useI18nStore } from '@/stores/i18nStore'
+import { uploadUrl } from '@/services/api'
 
 const { t } = storeToRefs(useI18nStore())
 
@@ -46,7 +47,7 @@ onUnmounted(() => observer?.disconnect())
       <!-- Photo -->
       <div class="aspect-[3/4] rounded-2xl overflow-hidden bg-[var(--color-surface)] border border-[var(--color-border)]">
         <img
-          :src="'/uploads/1781444286545-33679.jpg'"
+          :src="uploadUrl('1781444286545-33679.jpg')"
           :alt="t.about.photoAlt"
           class="w-full h-full object-cover object-top"
         />

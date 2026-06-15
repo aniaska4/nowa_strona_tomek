@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
 })
 
 api.interceptors.request.use((config) => {
@@ -22,5 +22,10 @@ api.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+export const uploadUrl = (filename) => {
+  const base = import.meta.env.VITE_UPLOADS_URL || ''
+  return `${base}/uploads/${filename}`
+}
 
 export default api

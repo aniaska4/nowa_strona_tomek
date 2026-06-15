@@ -1,4 +1,6 @@
 <script setup>
+import { uploadUrl } from '@/services/api'
+
 defineProps({
   item: {
     type: Object,
@@ -15,7 +17,7 @@ const emit = defineEmits(['open'])
     @click="emit('open', item)"
   >
     <img
-      :src="`/uploads/${item.filename}`"
+      :src="uploadUrl(item.filename)"
       :alt="item.caption || 'Galeria'"
       class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       loading="lazy"

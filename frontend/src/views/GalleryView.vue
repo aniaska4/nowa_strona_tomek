@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useGalleryStore } from '@/stores/galleryStore'
 import { useI18nStore } from '@/stores/i18nStore'
 import GalleryItem from '@/components/ui/GalleryItem.vue'
+import { uploadUrl } from '@/services/api'
 
 const { t } = storeToRefs(useI18nStore())
 const galleryStore = useGalleryStore()
@@ -112,7 +113,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
             <img
               v-if="current"
               :key="current.id"
-              :src="`/uploads/${current.filename}`"
+              :src="uploadUrl(current.filename)"
               :alt="current.caption || ''"
               class="max-w-full max-h-full object-contain rounded select-none"
               draggable="false"

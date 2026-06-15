@@ -6,7 +6,7 @@ import { useEventsStore } from '@/stores/eventsStore'
 import { useGalleryStore } from '@/stores/galleryStore'
 import { useVideosStore } from '@/stores/videosStore'
 import EventForm from '@/components/admin/EventForm.vue'
-import api from '@/services/api'
+import api, { uploadUrl } from '@/services/api'
 
 const router  = useRouter()
 const auth    = useAuthStore()
@@ -169,7 +169,7 @@ const allEvents = () => [...events.upcoming, ...events.archive].sort((a, b) => n
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div v-for="item in gallery.items" :key="item.id" class="group relative aspect-square rounded-xl overflow-hidden border border-[var(--color-border)]">
-          <img :src="`/uploads/${item.filename}`" :alt="item.caption" class="w-full h-full object-cover" />
+          <img :src="uploadUrl(item.filename)" :alt="item.caption" class="w-full h-full object-cover" />
           <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <button class="px-3 py-1 text-xs border border-red-500 text-red-400 hover:bg-red-600 hover:text-white rounded transition-colors" @click="deletePhoto(item.id)">Usuń</button>
           </div>
