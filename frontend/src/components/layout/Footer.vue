@@ -13,9 +13,7 @@ const { t } = storeToRefs(useI18nStore())
         &copy; {{ new Date().getFullYear() }} {{ t.footer.rights }}
       </p>
       <div class="flex gap-4">
-        <a href="#" class="text-[var(--color-muted)] hover:text-primary-400 transition-colors text-sm">Facebook</a>
-        <a href="#" class="text-[var(--color-muted)] hover:text-primary-400 transition-colors text-sm">YouTube</a>
-        <a href="#" class="text-[var(--color-muted)] hover:text-primary-400 transition-colors text-sm">Instagram</a>
+        <a href="https://www.youtube.com/@tomaszdomanski-pianist6899" target="_blank" rel="noopener noreferrer" class="text-[var(--color-muted)] hover:text-primary-400 transition-colors text-sm">YouTube</a>
       </div>
     </div>
   </footer>

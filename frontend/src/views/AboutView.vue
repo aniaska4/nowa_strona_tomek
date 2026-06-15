@@ -47,7 +47,7 @@ onUnmounted(() => observer?.disconnect())
       <!-- Photo -->
       <div class="aspect-[3/4] rounded-2xl overflow-hidden bg-[var(--color-surface)] border border-[var(--color-border)]">
         <img
-          :src="uploadUrl('1781444286545-33679.jpg')"
+          :src="uploadUrl('1781539752034-468285.jpg')"
           :alt="t.about.photoAlt"
           class="w-full h-full object-cover object-top"
         />
