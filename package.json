@@ -2,6 +2,7 @@
   "name": "pianist-website",
   "version": "1.0.0",
   "scripts": {
+    "start": "node backend/src/app.js",
     "deploy": "bash deploy.sh"
   },
   "devDependencies": {
