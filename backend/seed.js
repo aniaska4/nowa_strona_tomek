@@ -1,8 +1,8 @@
-const path    = require('path')
-const sqlite3 = require('sqlite3').verbose()
+const path     = require('path')
+const Database = require('better-sqlite3')
 
 const DB_PATH = path.join(__dirname, 'database/pianist.db')
-const db      = new sqlite3.Database(DB_PATH)
+const db      = new Database(DB_PATH)
 
 const events = [
   // --- Nadchodzące (wg. oryginalnej strony) ---
@@ -191,18 +191,18 @@ const events = [
   },
 ]
 
-db.serialize(() => {
-  // Clear existing events first to avoid duplicates on re-run
-  db.run('DELETE FROM events', () => {
-    const stmt = db.prepare(
-      'INSERT INTO events (title, date, venue, city, description) VALUES (?, ?, ?, ?, ?)'
-    )
-    for (const e of events) {
-      stmt.run(e.title, e.date, e.venue, e.city, e.description)
-    }
-    stmt.finalize(() => {
-      console.log(`Inserted ${events.length} events.`)
-      db.close()
-    })
-  })
+// Clear existing events first to avoid duplicates on re-run
+db.prepare('DELETE FROM events').run()
+
+const stmt = db.prepare(
+  'INSERT INTO events (title, date, venue, city, description) VALUES (?, ?, ?, ?, ?)'
+)
+const insertMany = db.transaction((rows) => {
+  for (const e of rows) {
+    stmt.run(e.title, e.date, e.venue, e.city, e.description)
+  }
 })
+insertMany(events)
+
+console.log(`Inserted ${events.length} events.`)
+db.close()
