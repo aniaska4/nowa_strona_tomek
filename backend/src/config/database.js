@@ -3,7 +3,7 @@ const path      = require('path')
 const bcrypt    = require('bcryptjs')
 const fs        = require('fs')
 
-const DB_PATH = path.join(__dirname, '../../database/pianist.db')
+const DB_PATH = path.join('/app/backend/data', 'pianist.db')
 
 const dbDir = path.dirname(DB_PATH)
 if (!fs.existsSync(dbDir)) {
