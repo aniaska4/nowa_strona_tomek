@@ -15,6 +15,4 @@ npm run build
 cd ..
 
 echo "Uploading to OVH..."
-scp -P "$SFTP_PORT" -r frontend/dist/. "$SFTP_USER@$SFTP_HOST:$REMOTE_DIR/"
-
-echo "Deploy complete! Site is live at https://tomasz-domanski.com"
+node scripts/deploy.js

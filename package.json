@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "deploy": "bash deploy.sh"
+  },
+  "devDependencies": {
+    "ssh2-sftp-client": "^12.1.1"
   }
 }
