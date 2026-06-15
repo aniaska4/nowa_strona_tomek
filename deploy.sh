@@ -5,7 +5,7 @@ set -e
 SFTP_USER="tomaszz"
 SFTP_HOST="ftp.cluster130.hosting.ovh.net"
 SFTP_PORT="22"
-REMOTE_DIR="/home/tomaszz/www"   # web root on OVH
+REMOTE_DIR="/home/tomaszz/www"
 # ──────────────────────────────────────────────────────────────────
 
 echo "Building frontend..."
@@ -15,6 +15,6 @@ npm run build
 cd ..
 
 echo "Uploading to OVH..."
-rsync -avz --delete -e "ssh -p $SFTP_PORT" frontend/dist/ "$SFTP_USER@$SFTP_HOST:$REMOTE_DIR/"
+scp -P "$SFTP_PORT" -r frontend/dist/. "$SFTP_USER@$SFTP_HOST:$REMOTE_DIR/"
 
 echo "Deploy complete! Site is live at https://tomasz-domanski.com"
