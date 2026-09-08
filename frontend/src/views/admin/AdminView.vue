@@ -78,14 +78,51 @@ async function deleteVideo(id) {
   if (confirm('Usunąć ten film?')) await videos.deleteVideo(id)
 }
 
+// Zmniejsz zdjęcie w przeglądarce przed wysyłką (duże pliki z telefonu/aparatu
+// potrafią zrywać połączenie na proxy Railway - ERR_HTTP2_PROTOCOL_ERROR)
+function downscaleImage(file, maxSize = 2000, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    const url = URL.createObjectURL(file)
+    img.onload = () => {
+      URL.revokeObjectURL(url)
+      let { width, height } = img
+      if (width > maxSize || height > maxSize) {
+        if (width >= height) {
+          height = Math.round((height * maxSize) / width)
+          width  = maxSize
+        } else {
+          width  = Math.round((width * maxSize) / height)
+          height = maxSize
+        }
+      }
+      const canvas = document.createElement('canvas')
+      canvas.width  = width
+      canvas.height = height
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height)
+      canvas.toBlob(
+        (blob) => (blob ? resolve(blob) : reject(new Error('Nie udało się przetworzyć zdjęcia'))),
+        'image/jpeg',
+        quality
+      )
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error('Nie udało się wczytać zdjęcia'))
+    }
+    img.src = url
+  })
+}
+
 async function uploadPhoto() {
   const file = photoInput.value?.files[0]
   if (!file) return
-  const fd = new FormData()
-  fd.append('photo', file)
-  fd.append('caption', photoCaption.value)
   photoMsg.value = ''
   try {
+    const resized = await downscaleImage(file)
+    const fd = new FormData()
+    fd.append('photo', resized, 'photo.jpg')
+    fd.append('caption', photoCaption.value)
     await gallery.uploadPhoto(fd)
     photoCaption.value = ''
     photoInput.value.value = ''

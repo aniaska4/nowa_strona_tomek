@@ -35,4 +35,9 @@ app.use((err, req, res, _next) => {
 })
 
 const PORT = process.env.PORT || 3000
-app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`))
+const server = app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`))
+
+// Railway/proxy keep-alive timeout jest zwykle 60s; domyślny Node (5s) zrywa
+// połączenie za wcześnie i proxy zgłasza to jako błąd (np. HTTP2_PROTOCOL_ERROR)
+server.keepAliveTimeout = 65000
+server.headersTimeout   = 66000
