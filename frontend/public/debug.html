@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagnostyka API</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; background: #111; color: #eee; padding: 16px; font-size: 14px; }
+    h1 { font-size: 18px; }
+    .test { border: 1px solid #444; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+    .test h2 { font-size: 14px; margin: 0 0 8px; }
+    .ok   { color: #4ade80; }
+    .fail { color: #f87171; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #000; padding: 8px; border-radius: 6px; font-size: 12px; }
+    button { padding: 10px 16px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>Diagnostyka API</h1>
+  <p><small id="ua"></small></p>
+  <button onclick="runAll()">Uruchom testy ponownie</button>
+  <div id="results"></div>
+
+  <script>
+    document.getElementById('ua').textContent = navigator.userAgent
+
+    const API = 'https://nowa-strona-tomek.up.railway.app/api'
+    const results = document.getElementById('results')
+
+    async function runTest(name, fn) {
+      const box = document.createElement('div')
+      box.className = 'test'
+      box.innerHTML = `<h2>${name}</h2><pre>Trwa...</pre>`
+      results.appendChild(box)
+      const pre = box.querySelector('pre')
+      const start = performance.now()
+      try {
+        const info = await fn()
+        const ms = Math.round(performance.now() - start)
+        pre.textContent = `OK (${ms}ms)\n` + info
+        pre.parentElement.querySelector('h2').innerHTML += ' <span class="ok">✓</span>'
+      } catch (err) {
+        const ms = Math.round(performance.now() - start)
+        pre.textContent = `BŁĄD (${ms}ms)\nname: ${err.name}\nmessage: ${err.message}\nstack: ${(err.stack || '').slice(0, 300)}`
+        pre.parentElement.querySelector('h2').innerHTML += ' <span class="fail">✗</span>'
+      }
+    }
+
+    async function runAll() {
+      results.innerHTML = ''
+
+      await runTest('1. fetch GET /health (cors)', async () => {
+        const res = await fetch(`${API}/health`, { mode: 'cors' })
+        const text = await res.text()
+        return `status: ${res.status}\ntype: ${res.type}\nbody: ${text}`
+      })
+
+      await runTest('2. fetch GET /gallery (cors)', async () => {
+        const res = await fetch(`${API}/gallery`, { mode: 'cors' })
+        const text = await res.text()
+        return `status: ${res.status}\ntype: ${res.type}\nbody: ${text.slice(0, 300)}`
+      })
+
+      await runTest('3. fetch POST /auth/login (cors, preflight)', async () => {
+        const res = await fetch(`${API}/auth/login`, {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: 'diagnostic-test', password: 'diagnostic-test' }),
+        })
+        const text = await res.text()
+        return `status: ${res.status}\ntype: ${res.type}\nbody: ${text.slice(0, 300)}`
+      })
+
+      await runTest('4. fetch GET /health (no-cors, opaque)', async () => {
+        const res = await fetch(`${API}/health`, { mode: 'no-cors' })
+        return `status: ${res.status}\ntype: ${res.type} (opaque = request completed, response hidden)`
+      })
+
+      await runTest('5. XMLHttpRequest GET /health', () => new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open('GET', `${API}/health`)
+        xhr.onload = () => resolve(`status: ${xhr.status}\nbody: ${xhr.responseText}`)
+        xhr.onerror = () => reject(new Error('XHR onerror fired (no further detail available to JS)'))
+        xhr.send()
+      }))
+    }
+
+    runAll()
+  </script>
+</body>
+</html>
