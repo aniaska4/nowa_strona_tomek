@@ -26,6 +26,7 @@ const videoMsg  = ref('')
 const photoInput = ref(null)
 const photoCaption = ref('')
 const photoMsg  = ref('')
+const photoUploading = ref(false)
 
 onMounted(() => {
   events.fetchUpcoming()
@@ -118,6 +119,7 @@ async function uploadPhoto() {
   const file = photoInput.value?.files[0]
   if (!file) return
   photoMsg.value = ''
+  photoUploading.value = true
   try {
     const resized = await downscaleImage(file)
     const fd = new FormData()
@@ -132,6 +134,8 @@ async function uploadPhoto() {
     const msg    = err?.response?.data?.error || err?.message || 'nieznany błąd'
     photoMsg.value = `Błąd ${status ?? ''}: ${msg}`
     console.error('Upload error:', err)
+  } finally {
+    photoUploading.value = false
   }
 }
 
@@ -198,9 +202,12 @@ const allEvents = () => [...events.upcoming, ...events.archive].sort((a, b) => n
 
       <div class="card mb-6 space-y-3">
         <h3 class="text-white font-medium">Dodaj zdjęcie</h3>
-        <input ref="photoInput" type="file" accept="image/*" class="text-[var(--color-muted)] text-sm" />
-        <input v-model="photoCaption" type="text" class="input-field" placeholder="Podpis (opcjonalnie)" />
-        <button class="btn-primary text-sm" @click="uploadPhoto">Prześlij</button>
+        <input ref="photoInput" type="file" accept="image/*" :disabled="photoUploading" class="text-[var(--color-muted)] text-sm" />
+        <input v-model="photoCaption" type="text" class="input-field" placeholder="Podpis (opcjonalnie)" :disabled="photoUploading" />
+        <button class="btn-primary text-sm inline-flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed" :disabled="photoUploading" @click="uploadPhoto">
+          <span v-if="photoUploading" class="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
+          {{ photoUploading ? 'Wysyłanie…' : 'Prześlij' }}
+        </button>
         <p v-if="photoMsg" class="text-sm" :class="photoMsg === 'Dodano!' ? 'text-green-400' : 'text-red-400'">{{ photoMsg }}</p>
       </div>
 
