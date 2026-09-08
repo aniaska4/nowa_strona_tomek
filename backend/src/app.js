@@ -5,7 +5,15 @@ const path    = require('path')
 
 const app = express()
 
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173' }))
+// Accept both the apex and www variant of CLIENT_ORIGIN - shared hosting
+// (OVH) serves the site under both, and a mismatch here silently breaks
+// every cross-origin fetch/XHR (CORS), even though plain navigation still
+// works, since the browser only enforces CORS on script-driven requests.
+const clientOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:5173'
+const apexOrigin    = clientOrigin.replace('://www.', '://')
+const allowedOrigins = [apexOrigin, apexOrigin.replace('://', '://www.')]
+
+app.use(cors({ origin: allowedOrigins }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
