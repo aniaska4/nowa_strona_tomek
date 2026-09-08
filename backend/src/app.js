@@ -18,6 +18,7 @@ app.use('/api/events',  require('./routes/events'))
 app.use('/api/gallery', require('./routes/gallery'))
 app.use('/api/videos',  require('./routes/videos'))
 app.use('/api/contact', require('./routes/contact'))
+app.use('/api/content', require('./routes/content'))
 
 // Health check
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }))

@@ -7,6 +7,7 @@ const routes = [
   { path: '/news',      name: 'news',    component: () => import('@/views/NewsView.vue') },
   { path: '/gallery',   name: 'gallery', component: () => import('@/views/GalleryView.vue') },
   { path: '/video',     name: 'video',   component: () => import('@/views/VideoView.vue') },
+  { path: '/pilatus-duo', name: 'pilatus-duo', component: () => import('@/views/PilatusDuoView.vue') },
   { path: '/contact',   name: 'contact', component: () => import('@/views/ContactView.vue') },
   {
     path: '/admin/login',

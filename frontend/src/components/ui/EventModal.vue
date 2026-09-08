@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useI18nStore } from '@/stores/i18nStore'
 
-const { t, locale } = storeToRefs(useI18nStore())
+const { t, dateLocale } = storeToRefs(useI18nStore())
 
 const props = defineProps({
   event: { type: Object, default: null },
@@ -12,14 +12,14 @@ const emit = defineEmits(['close'])
 
 const fullDate = computed(() => {
   if (!props.event) return ''
-  return new Date(props.event.date).toLocaleDateString(locale.value === 'en' ? 'en-GB' : 'pl-PL', {
+  return new Date(props.event.date).toLocaleDateString(dateLocale.value, {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   })
 })
 
 const shortMonth = computed(() => {
   if (!props.event) return ''
-  return new Date(props.event.date).toLocaleDateString(locale.value === 'en' ? 'en-GB' : 'pl-PL', { month: 'short' })
+  return new Date(props.event.date).toLocaleDateString(dateLocale.value, { month: 'short' })
 })
 
 const isPast = computed(() => {

@@ -1,8 +1,13 @@
 <script setup>
+import { storeToRefs } from 'pinia'
+import { useI18nStore } from '@/stores/i18nStore'
+
 defineProps({
   event: { type: Object, required: true },
 })
 const emit = defineEmits(['open'])
+
+const { dateLocale } = storeToRefs(useI18nStore())
 </script>
 
 <template>
@@ -16,7 +21,7 @@ const emit = defineEmits(['open'])
           {{ new Date(event.date).getDate() }}
         </span>
         <span class="block text-xs text-[var(--color-muted)] uppercase tracking-wider mt-0.5">
-          {{ new Date(event.date).toLocaleDateString('pl-PL', { month: 'short' }) }}
+          {{ new Date(event.date).toLocaleDateString(dateLocale, { month: 'short' }) }}
         </span>
       </div>
       <div class="flex-1 min-w-0">

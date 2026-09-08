@@ -15,12 +15,11 @@ const links = computed(() => [
   { to: '/news',    label: t.value.nav.news    },
   { to: '/gallery', label: t.value.nav.gallery },
   { to: '/video',   label: t.value.nav.video   },
+  { to: '/pilatus-duo', label: t.value.nav.pilatusDuo },
   { to: '/contact', label: t.value.nav.contact },
 ])
 
-function toggleLocale() {
-  i18n.setLocale(locale.value === 'pl' ? 'en' : 'pl')
-}
+const LOCALES = ['pl', 'en', 'de']
 </script>
 
 <template>
@@ -45,16 +44,18 @@ function toggleLocale() {
           </RouterLink>
 
           <!-- Language switch -->
-          <button
-            class="flex items-center gap-1 text-xs font-semibold tracking-widest border border-[var(--color-border)] rounded-md px-2.5 py-1 transition-colors hover:border-primary-500 hover:text-white"
-            :class="locale === 'en' ? 'text-primary-400 border-primary-600' : 'text-[var(--color-muted)]'"
-            @click="toggleLocale"
-            :aria-label="locale === 'pl' ? 'Switch to English' : 'Przełącz na Polski'"
-          >
-            <span :class="locale === 'pl' ? 'text-white' : 'text-[var(--color-muted)]'">PL</span>
-            <span class="text-[var(--color-border)]">/</span>
-            <span :class="locale === 'en' ? 'text-white' : 'text-[var(--color-muted)]'">EN</span>
-          </button>
+          <div class="flex items-center gap-1 text-xs font-semibold tracking-widest border border-[var(--color-border)] rounded-md px-2.5 py-1">
+            <template v-for="(lang, i) in LOCALES" :key="lang">
+              <span v-if="i > 0" class="text-[var(--color-border)]">/</span>
+              <button
+                type="button"
+                @click="i18n.setLocale(lang)"
+                :class="locale === lang ? 'text-primary-400' : 'text-[var(--color-muted)] hover:text-white'"
+                :aria-label="`Switch to ${lang.toUpperCase()}`"
+                :aria-current="locale === lang"
+              >{{ lang.toUpperCase() }}</button>
+            </template>
+          </div>
         </div>
 
         <!-- Hamburger -->
@@ -88,14 +89,16 @@ function toggleLocale() {
         </RouterLink>
 
         <!-- Lang switch mobile -->
-        <button
-          class="flex items-center gap-1.5 text-xs font-semibold tracking-widest pt-2 pb-1"
-          @click="toggleLocale"
-        >
-          <span :class="locale === 'pl' ? 'text-white' : 'text-[var(--color-muted)]'">PL</span>
-          <span class="text-[var(--color-border)]">/</span>
-          <span :class="locale === 'en' ? 'text-white' : 'text-[var(--color-muted)]'">EN</span>
-        </button>
+        <div class="flex items-center gap-1.5 text-xs font-semibold tracking-widest pt-2 pb-1">
+          <template v-for="(lang, i) in LOCALES" :key="lang">
+            <span v-if="i > 0" class="text-[var(--color-border)]">/</span>
+            <button
+              type="button"
+              @click="i18n.setLocale(lang)"
+              :class="locale === lang ? 'text-white' : 'text-[var(--color-muted)]'"
+            >{{ lang.toUpperCase() }}</button>
+          </template>
+        </div>
       </div>
     </Transition>
   </nav>

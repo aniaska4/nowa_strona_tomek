@@ -5,9 +5,12 @@ const sharp = require('sharp')
 
 const UPLOADS_DIR = path.join(__dirname, '../../uploads')
 
-async function getGallery(_req, res) {
+async function getGallery(req, res) {
   try {
-    const rows = await db.allAsync('SELECT * FROM gallery ORDER BY created_at DESC')
+    const category = req.query.category || null
+    const rows = category
+      ? await db.allAsync('SELECT * FROM gallery WHERE category = ? ORDER BY created_at DESC', [category])
+      : await db.allAsync('SELECT * FROM gallery WHERE category IS NULL ORDER BY created_at DESC')
     res.json(rows)
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -28,10 +31,11 @@ async function uploadPhoto(req, res) {
       .jpeg({ quality: 85, progressive: true })
       .toFile(outPath)
 
-    const caption = req.body.caption || null
-    const result  = await db.runAsync(
-      'INSERT INTO gallery (filename, caption) VALUES (?, ?)',
-      [filename, caption]
+    const caption  = req.body.caption || null
+    const category = req.body.category || null
+    const result   = await db.runAsync(
+      'INSERT INTO gallery (filename, caption, category) VALUES (?, ?, ?)',
+      [filename, caption, category]
     )
     const row = await db.getAsync('SELECT * FROM gallery WHERE id = ?', [result.lastID])
     res.status(201).json(row)

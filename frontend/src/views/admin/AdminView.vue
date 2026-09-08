@@ -5,6 +5,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useEventsStore } from '@/stores/eventsStore'
 import { useGalleryStore } from '@/stores/galleryStore'
 import { useVideosStore } from '@/stores/videosStore'
+import { usePilatusStore } from '@/stores/pilatusStore'
 import EventForm from '@/components/admin/EventForm.vue'
 import api, { uploadUrl } from '@/services/api'
 
@@ -13,6 +14,7 @@ const auth    = useAuthStore()
 const events  = useEventsStore()
 const gallery = useGalleryStore()
 const videos  = useVideosStore()
+const pilatus = usePilatusStore()
 
 const tab         = ref('events')
 const editingEvent = ref(null)
@@ -28,11 +30,24 @@ const photoCaption = ref('')
 const photoMsg  = ref('')
 const photoUploading = ref(false)
 
-onMounted(() => {
+// Pilatus Duo
+const pilatusTextDraft   = ref('')
+const pilatusTextSaving  = ref(false)
+const pilatusTextMsg     = ref('')
+const pilatusPhotoInput  = ref(null)
+const pilatusPhotoCaption = ref('')
+const pilatusPhotoMsg    = ref('')
+const pilatusPhotoUploading = ref(false)
+const pilatusVideoForm   = ref({ title: '', url: '', description: '' })
+const pilatusVideoMsg    = ref('')
+
+onMounted(async () => {
   events.fetchUpcoming()
   events.fetchArchive()
   gallery.fetchGallery()
   videos.fetchVideos()
+  await pilatus.fetchAll()
+  pilatusTextDraft.value = pilatus.text
 })
 
 function logout() {
@@ -143,6 +158,62 @@ async function deletePhoto(id) {
   if (confirm('Usunąć to zdjęcie?')) await gallery.deletePhoto(id)
 }
 
+async function savePilatusText() {
+  pilatusTextMsg.value = ''
+  pilatusTextSaving.value = true
+  try {
+    await pilatus.updateText(pilatusTextDraft.value)
+    pilatusTextMsg.value = 'Zapisano!'
+  } catch {
+    pilatusTextMsg.value = 'Błąd podczas zapisu.'
+  } finally {
+    pilatusTextSaving.value = false
+  }
+}
+
+async function uploadPilatusPhoto() {
+  const file = pilatusPhotoInput.value?.files[0]
+  if (!file) return
+  pilatusPhotoMsg.value = ''
+  pilatusPhotoUploading.value = true
+  try {
+    const resized = await downscaleImage(file)
+    const fd = new FormData()
+    fd.append('photo', resized, 'photo.jpg')
+    fd.append('caption', pilatusPhotoCaption.value)
+    await pilatus.uploadPhoto(fd)
+    pilatusPhotoCaption.value = ''
+    pilatusPhotoInput.value.value = ''
+    pilatusPhotoMsg.value = 'Dodano!'
+  } catch (err) {
+    const status = err?.response?.status
+    const msg    = err?.response?.data?.error || err?.message || 'nieznany błąd'
+    pilatusPhotoMsg.value = `Błąd ${status ?? ''}: ${msg}`
+    console.error('Upload error:', err)
+  } finally {
+    pilatusPhotoUploading.value = false
+  }
+}
+
+async function deletePilatusPhoto(id) {
+  if (confirm('Usunąć to zdjęcie?')) await pilatus.deletePhoto(id)
+}
+
+async function addPilatusVideo() {
+  pilatusVideoMsg.value = ''
+  try {
+    await pilatus.addVideo(pilatusVideoForm.value)
+    Object.assign(pilatusVideoForm.value, { title: '', url: '', description: '' })
+    pilatusVideoMsg.value = 'Dodano!'
+  } catch {
+    pilatusVideoMsg.value = 'Błąd podczas dodawania.'
+  }
+}
+
+async function deletePilatusVideo(id) {
+  if (confirm('Usunąć ten film?')) await pilatus.deleteVideo(id)
+}
+
 const allEvents = () => [...events.upcoming, ...events.archive].sort((a, b) => new Date(b.date) - new Date(a.date))
 </script>
 
@@ -156,12 +227,12 @@ const allEvents = () => [...events.upcoming, ...events.archive].sort((a, b) => n
 
     <!-- Tab bar -->
     <div class="flex gap-1 p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg w-fit mb-8">
-      <button v-for="t in ['events','gallery','videos']" :key="t"
-        class="px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-colors"
+      <button v-for="t in ['events','gallery','videos','pilatus']" :key="t"
+        class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
         :class="tab === t ? 'bg-primary-600 text-white' : 'text-[var(--color-muted)] hover:text-white'"
         @click="tab = t"
       >
-        {{ t === 'events' ? 'Koncerty' : t === 'gallery' ? 'Galeria' : 'Wideo' }}
+        {{ t === 'events' ? 'Koncerty' : t === 'gallery' ? 'Galeria' : t === 'videos' ? 'Wideo' : 'Pilatus Duo' }}
       </button>
     </div>
 
@@ -222,7 +293,7 @@ const allEvents = () => [...events.upcoming, ...events.archive].sort((a, b) => n
     </section>
 
     <!-- VIDEOS -->
-    <section v-else>
+    <section v-else-if="tab === 'videos'">
       <h2 class="font-serif text-xl text-white mb-4">Wideo</h2>
 
       <div class="card mb-6 space-y-3">
@@ -241,6 +312,68 @@ const allEvents = () => [...events.upcoming, ...events.archive].sort((a, b) => n
             <p class="text-[var(--color-muted)] text-sm truncate">{{ video.url }}</p>
           </div>
           <button class="px-3 py-1 text-xs border border-red-700 text-red-400 hover:bg-red-700 hover:text-white rounded-lg transition-colors shrink-0" @click="deleteVideo(video.id)">Usuń</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PILATUS DUO -->
+    <section v-else>
+      <h2 class="font-serif text-xl text-white mb-4">Pilatus Duo</h2>
+
+      <!-- Text -->
+      <div class="card mb-6 space-y-3">
+        <h3 class="text-white font-medium">Opis</h3>
+        <textarea
+          v-model="pilatusTextDraft"
+          rows="5"
+          class="input-field resize-y"
+          placeholder="Krótki opis Pilatus Duo..."
+          :disabled="pilatusTextSaving"
+        ></textarea>
+        <button class="btn-primary text-sm disabled:opacity-60" :disabled="pilatusTextSaving" @click="savePilatusText">
+          {{ pilatusTextSaving ? 'Zapisywanie…' : 'Zapisz opis' }}
+        </button>
+        <p v-if="pilatusTextMsg" class="text-sm" :class="pilatusTextMsg === 'Zapisano!' ? 'text-green-400' : 'text-red-400'">{{ pilatusTextMsg }}</p>
+      </div>
+
+      <!-- Photos -->
+      <div class="card mb-6 space-y-3">
+        <h3 class="text-white font-medium">Dodaj zdjęcie</h3>
+        <input ref="pilatusPhotoInput" type="file" accept="image/*" :disabled="pilatusPhotoUploading" class="text-[var(--color-muted)] text-sm" />
+        <input v-model="pilatusPhotoCaption" type="text" class="input-field" placeholder="Podpis (opcjonalnie)" :disabled="pilatusPhotoUploading" />
+        <button class="btn-primary text-sm inline-flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed" :disabled="pilatusPhotoUploading" @click="uploadPilatusPhoto">
+          <span v-if="pilatusPhotoUploading" class="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
+          {{ pilatusPhotoUploading ? 'Wysyłanie…' : 'Prześlij' }}
+        </button>
+        <p v-if="pilatusPhotoMsg" class="text-sm" :class="pilatusPhotoMsg === 'Dodano!' ? 'text-green-400' : 'text-red-400'">{{ pilatusPhotoMsg }}</p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div v-for="item in pilatus.photos" :key="item.id" class="group relative aspect-square rounded-xl overflow-hidden border border-[var(--color-border)]">
+          <img :src="uploadUrl(item.filename)" :alt="item.caption" class="w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <button class="px-3 py-1 text-xs border border-red-500 text-red-400 hover:bg-red-600 hover:text-white rounded transition-colors" @click="deletePilatusPhoto(item.id)">Usuń</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Videos -->
+      <div class="card mb-6 space-y-3">
+        <h3 class="text-white font-medium">Dodaj film</h3>
+        <input v-model="pilatusVideoForm.title" type="text" class="input-field" placeholder="Tytuł" />
+        <input v-model="pilatusVideoForm.url" type="url" class="input-field" placeholder="Link YouTube" />
+        <input v-model="pilatusVideoForm.description" type="text" class="input-field" placeholder="Opis (opcjonalnie)" />
+        <button class="btn-primary text-sm" @click="addPilatusVideo">Dodaj</button>
+        <p v-if="pilatusVideoMsg" class="text-sm" :class="pilatusVideoMsg === 'Dodano!' ? 'text-green-400' : 'text-red-400'">{{ pilatusVideoMsg }}</p>
+      </div>
+
+      <div class="space-y-3">
+        <div v-for="video in pilatus.videos" :key="video.id" class="card flex items-center justify-between gap-4">
+          <div class="min-w-0">
+            <p class="text-white font-medium truncate">{{ video.title }}</p>
+            <p class="text-[var(--color-muted)] text-sm truncate">{{ video.url }}</p>
+          </div>
+          <button class="px-3 py-1 text-xs border border-red-700 text-red-400 hover:bg-red-700 hover:text-white rounded-lg transition-colors shrink-0" @click="deletePilatusVideo(video.id)">Usuń</button>
         </div>
       </div>
     </section>

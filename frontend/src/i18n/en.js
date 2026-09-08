@@ -1,11 +1,12 @@
 export default {
   nav: {
-    home:    'Home',
-    about:   'About',
-    news:    'News',
-    gallery: 'Gallery',
-    video:   'Video',
-    contact: 'Contact',
+    home:       'Home',
+    about:      'About',
+    news:       'News',
+    gallery:    'Gallery',
+    video:      'Video',
+    pilatusDuo: 'Pilatus Duo',
+    contact:    'Contact',
   },
   home: {
     role:    'Pianist · Accompanist · Chamber Musician',

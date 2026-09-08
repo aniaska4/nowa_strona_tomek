@@ -41,12 +41,25 @@ db.exec(`CREATE TABLE IF NOT EXISTS gallery (
   created_at TEXT    DEFAULT (datetime('now'))
 )`)
 
+// Migration: tag gallery items with an optional category (e.g. 'pilatus_duo')
+// so sub-pages can show their own photos without mixing into the main gallery
+try { db.exec(`ALTER TABLE gallery ADD COLUMN category TEXT`) } catch (_) {}
+
 db.exec(`CREATE TABLE IF NOT EXISTS videos (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   title       TEXT NOT NULL,
   url         TEXT NOT NULL,
   description TEXT,
   created_at  TEXT DEFAULT (datetime('now'))
+)`)
+
+try { db.exec(`ALTER TABLE videos ADD COLUMN category TEXT`) } catch (_) {}
+
+// Freeform text blocks for sub-pages (e.g. 'pilatus_duo'), editable from admin
+db.exec(`CREATE TABLE IF NOT EXISTS content (
+  key        TEXT PRIMARY KEY,
+  text       TEXT NOT NULL DEFAULT '',
+  updated_at TEXT DEFAULT (datetime('now'))
 )`)
 
 db.exec(`CREATE TABLE IF NOT EXISTS messages (
