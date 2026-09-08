@@ -3,7 +3,11 @@ const path      = require('path')
 const bcrypt    = require('bcryptjs')
 const fs        = require('fs')
 
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, '../../database/pianist.db')
+// Na Railway wolumen (jeśli podłączony) jest automatycznie widoczny pod
+// RAILWAY_VOLUME_MOUNT_PATH — trzymamy tam bazę, żeby przetrwała redeploy.
+const DB_PATH = process.env.DB_PATH
+  || (process.env.RAILWAY_VOLUME_MOUNT_PATH && path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, 'pianist.db'))
+  || path.join(__dirname, '../../database/pianist.db')
 
 const dbDir = path.dirname(DB_PATH)
 if (!fs.existsSync(dbDir)) {
