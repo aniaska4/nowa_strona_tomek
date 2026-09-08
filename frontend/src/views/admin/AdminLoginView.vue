@@ -15,8 +15,14 @@ async function handleLogin() {
   try {
     await auth.login(form.username, form.password)
     router.push('/admin')
-  } catch {
-    error.value = 'Nieprawidłowy login lub hasło.'
+  } catch (err) {
+    if (err.response) {
+      error.value = err.response.data?.error || `Błąd serwera (${err.response.status}).`
+    } else if (err.request) {
+      error.value = `Brak połączenia z serwerem (${err.code || 'network error'}).`
+    } else {
+      error.value = `Błąd: ${err.message}`
+    }
   } finally {
     loading.value = false
   }
@@ -31,11 +37,11 @@ async function handleLogin() {
       <form class="space-y-4" @submit.prevent="handleLogin">
         <div>
           <label class="block text-sm text-[var(--color-muted)] mb-1">Login</label>
-          <input v-model="form.username" type="text" class="input-field" required autocomplete="username" />
+          <input v-model="form.username" type="text" class="input-field" required autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" />
         </div>
         <div>
           <label class="block text-sm text-[var(--color-muted)] mb-1">Hasło</label>
-          <input v-model="form.password" type="password" class="input-field" required autocomplete="current-password" />
+          <input v-model="form.password" type="password" class="input-field" required autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" />
         </div>
 
         <p v-if="error" class="text-red-400 text-sm">{{ error }}</p>
