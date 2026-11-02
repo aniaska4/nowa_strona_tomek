@@ -6,6 +6,8 @@ export default {
     gallery:    'Galeria',
     video:      'Wideo',
     pilatusDuo: 'Pilatus Duo',
+    aboutUs:    'O nas',
+    pilatusPianoDuo: 'Pilatus Piano Duo',
     contact:    'Kontakt',
   },
   home: {
@@ -24,6 +26,26 @@ export default {
     ],
     stats: ['lat na scenie', 'koncertów', 'krajów', 'nagród'],
     photoAlt: 'Zdjęcie artysty',
+  },
+  aboutUs: {
+    label: 'O nas',
+    title: 'Pilatus Piano Duo',
+    intro: 'Pilatus Piano Duo to dynamiczny duet fortepianowy związany ze Szwajcarią, tworzony przez Lidię Domańską (Lidiia Domańska) oraz Tomasza Domańskiego. Połączenie dwóch artystycznych osobowości przy jednym instrumencie pozwala im tworzyć wykonania pełne pasji, doskonałego zgrania i niezwykłej barwy dźwiękowej.',
+    sections: [
+      {
+        heading: 'Bogaty i różnorodny repertuar',
+        text: 'W centrum naszych zainteresowań znajduje się szeroki repertuar na cztery ręce – od mistrzowskich dzieł epoki baroku aż po kompozycje współczesne. W naszych programach obok klasyków literatury muzycznej, takich jak F. Schubert, J. Brahms, E. Grieg czy M. Ravel, ważne miejsce zajmują utwory kompozytorów rzadziej wykonywanych, a niezwykle wartościowych – m.in. F. I. Dobrzyńskiego, J. Raffa czy O. Stechyshyn.',
+      },
+      {
+        heading: 'Jeden fortepian niczym cała orkiestra',
+        text: 'Wykonujemy zarówno oryginalne dzieła napisane bezpośrednio na cztery ręce, jak i kunsztowne aranżacje utworów orkiestrowych. Naszym celem przy opracowywaniu i wykonywaniu transkrypcji jest wydobycie z jednego fortepianu pełnego spektrum barw, dynamiki i wielowarstwowości – tak, aby instrument brzmiał z mocą i bogactwem całej orkiestry symfonicznej.',
+      },
+    ],
+    discoverTitle: 'Odkryj naszą muzykę',
+    listenTitle:   'Posłuchaj nagrań',
+    listenText:    'Odkryj nasze brzmienie i poczuj sceniczną energię.',
+    concertsTitle: 'Zobacz najbliższe koncerty',
+    concertsText:  'Doświadcz na żywo, jak cztery ręce ożywiają największe dzieła muzyki klasycznej.',
   },
   news: {
     label:    'Aktualności',
@@ -62,7 +84,7 @@ export default {
     subjectPlaceholder: 'Zapytanie o koncert',
     messagePlaceholder: 'Treść wiadomości...',
     success: 'Wiadomość została wysłana. Odpiszę najszybciej jak to możliwe.',
-    error:   'Wystąpił błąd. Spróbuj ponownie lub wyślij e-mail bezpośrednio.',
+    error:   'Wystąpił błąd. Spróbuj ponownie później.',
     formTitle: 'Wyślij wiadomość',
   },
   modal: {

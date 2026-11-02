@@ -6,6 +6,8 @@ export default {
     gallery:    'Gallery',
     video:      'Video',
     pilatusDuo: 'Pilatus Duo',
+    aboutUs:    'About Us',
+    pilatusPianoDuo: 'Pilatus Piano Duo',
     contact:    'Contact',
   },
   home: {
@@ -24,6 +26,26 @@ export default {
     ],
     stats: ['years on stage', 'concerts', 'countries', 'awards'],
     photoAlt: 'Artist photo',
+  },
+  aboutUs: {
+    label: 'About Us',
+    title: 'Pilatus Piano Duo',
+    intro: 'Pilatus Piano Duo is a dynamic Swiss-based piano duo formed by Lidiia Domańska and Tomasz Domański. Bringing together two distinct artistic personalities at a single instrument, we create performances filled with passion, seamless precision, and rich tonal color.',
+    sections: [
+      {
+        heading: 'A Rich and Diverse Repertoire',
+        text: 'At the heart of our ensemble is a broad four-hand repertoire ranging from Baroque masterpieces to contemporary compositions. Alongside iconic classics by F. Schubert, J. Brahms, E. Grieg, and M. Ravel, we actively highlight lesser-known yet deeply rewarding works by composers such as F. I. Dobrzyński, J. Raff, and O. Stechyshyn.',
+      },
+      {
+        heading: 'One Piano, the Sound of a Full Orchestra',
+        text: 'Our programs feature both original works written specifically for four hands and masterful arrangements of orchestral pieces. When performing transcriptions, our focus is to unlock the full spectrum of colors, dynamics, and musical textures from a single piano—making it resonate with the depth and power of a full symphony orchestra.',
+      },
+    ],
+    discoverTitle: 'Experience Our Music',
+    listenTitle:   'Listen to Recordings',
+    listenText:    'Discover our sound and feel our musical energy online.',
+    concertsTitle: 'Upcoming Concerts',
+    concertsText:  'Join us live and experience how four hands at one piano bring classical masterpieces to life.',
   },
   news: {
     label:    'News',
@@ -62,7 +84,7 @@ export default {
     subjectPlaceholder: 'Concert enquiry',
     messagePlaceholder: 'Your message...',
     success: 'Your message has been sent. I will reply as soon as possible.',
-    error:   'An error occurred. Please try again or send an email directly.',
+    error:   'An error occurred. Please try again later.',
     formTitle: 'Send a message',
   },
   modal: {

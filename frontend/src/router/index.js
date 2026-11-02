@@ -8,6 +8,7 @@ const routes = [
   { path: '/gallery',   name: 'gallery', component: () => import('@/views/GalleryView.vue') },
   { path: '/video',     name: 'video',   component: () => import('@/views/VideoView.vue') },
   { path: '/pilatus-duo', name: 'pilatus-duo', component: () => import('@/views/PilatusDuoView.vue') },
+  { path: '/about-us/pilatus-piano-duo', name: 'about-us-pilatus', component: () => import('@/views/AboutUsPilatusView.vue') },
   { path: '/contact',   name: 'contact', component: () => import('@/views/ContactView.vue') },
   {
     path: '/admin/login',

@@ -6,6 +6,8 @@ export default {
     gallery:    'Galerie',
     video:      'Video',
     pilatusDuo: 'Pilatus Duo',
+    aboutUs:    'Über uns',
+    pilatusPianoDuo: 'Pilatus Piano Duo',
     contact:    'Kontakt',
   },
   home: {
@@ -24,6 +26,26 @@ export default {
     ],
     stats: ['Jahre auf der Bühne', 'Konzerte', 'Länder', 'Auszeichnungen'],
     photoAlt: 'Foto des Künstlers',
+  },
+  aboutUs: {
+    label: 'Über uns',
+    title: 'Pilatus Piano Duo',
+    intro: 'Das Pilatus Piano Duo ist ein dynamisches Klavierduo mit Bezug zur Schweiz, gegründet von Lidiia Domańska und Tomasz Domański. Die Verbindung zweier künstlerischer Persönlichkeiten an einem einzigen Instrument lässt Aufführungen voller Leidenschaft, perfektem Zusammenspiel und außergewöhnlicher Klangfarben entstehen.',
+    sections: [
+      {
+        heading: 'Ein reiches und vielseitiges Repertoire',
+        text: 'Im Mittelpunkt unserer Arbeit steht ein breites Repertoire für vier Hände – von Meisterwerken des Barock bis hin zu zeitgenössischen Kompositionen. Neben bekannten Klassikern von F. Schubert, J. Brahms, E. Grieg oder M. Ravel widmen wir uns auch seltener gespielten, aber äußerst wertvollen Werken – unter anderem von F. I. Dobrzyński, J. Raff oder O. Stechyshyn.',
+      },
+      {
+        heading: 'Ein Klavier wie ein ganzes Orchester',
+        text: 'Unsere Programme umfassen sowohl Originalwerke für vier Hände als auch kunstvolle Bearbeitungen von Orchesterwerken. Ein besonderes Anliegen bei unseren Transkriptionen ist es, dem Klavier das gesamte Spektrum an Klangfarben, Dynamik und Vielschichtigkeit zu entlocken – sodass ein einziger Flügel mit der Kraft und Fülle eines ganzen Symphonieorchesters erklingt.',
+      },
+    ],
+    discoverTitle: 'Tauchen Sie ein in unsere Musik',
+    listenTitle:   'Aufnahmen anhören',
+    listenText:    'Erleben Sie unseren besonderen Klang und unsere musikalische Energie online.',
+    concertsTitle: 'Nächste Konzerte',
+    concertsText:  'Besuchen Sie uns live und erfahren Sie, wie vier Hände an einem Flügel große Orchesterwerke zum Leben erwecken.',
   },
   news: {
     label:    'Neuigkeiten',
@@ -62,7 +84,7 @@ export default {
     subjectPlaceholder: 'Konzertanfrage',
     messagePlaceholder: 'Ihre Nachricht...',
     success: 'Ihre Nachricht wurde gesendet. Ich antworte so schnell wie möglich.',
-    error:   'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut oder senden Sie direkt eine E-Mail.',
+    error:   'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.',
     formTitle: 'Nachricht senden',
   },
   modal: {

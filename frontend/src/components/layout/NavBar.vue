@@ -8,18 +8,28 @@ const route      = useRoute()
 const i18n       = useI18nStore()
 const { t, locale } = storeToRefs(i18n)
 const mobileOpen = ref(false)
+const dropdownOpen = ref(null)
 
 const links = computed(() => [
   { to: '/',        label: t.value.nav.home    },
   { to: '/about',   label: t.value.nav.about   },
+  {
+    to: '/about-us', label: t.value.nav.aboutUs,
+    children: [
+      { to: '/about-us/pilatus-piano-duo', label: t.value.nav.pilatusPianoDuo },
+    ],
+  },
   { to: '/news',    label: t.value.nav.news    },
   { to: '/gallery', label: t.value.nav.gallery },
   { to: '/video',   label: t.value.nav.video   },
-  { to: '/pilatus-duo', label: t.value.nav.pilatusDuo },
   { to: '/contact', label: t.value.nav.contact },
 ])
 
 const LOCALES = ['pl', 'en', 'de']
+
+const isActive = (link) => link.children
+  ? link.children.some(child => route.path === child.to)
+  : route.path === link.to
 </script>
 
 <template>
@@ -33,15 +43,53 @@ const LOCALES = ['pl', 'en', 'de']
 
         <!-- Desktop links + lang switch -->
         <div class="hidden md:flex items-center gap-6">
-          <RouterLink
-            v-for="link in links"
-            :key="link.to"
-            :to="link.to"
-            class="text-sm text-[var(--color-muted)] hover:text-white transition-colors"
-            :class="{ '!text-primary-400': route.path === link.to }"
-          >
-            {{ link.label }}
-          </RouterLink>
+          <template v-for="link in links" :key="link.to">
+            <!-- Dropdown (hover on desktop, click for touch devices) -->
+            <div
+              v-if="link.children"
+              class="relative"
+              @mouseenter="dropdownOpen = link.to"
+              @mouseleave="dropdownOpen = null"
+            >
+              <button
+                type="button"
+                class="flex items-center gap-1 text-sm text-[var(--color-muted)] hover:text-white transition-colors"
+                :class="{ '!text-primary-400': isActive(link) }"
+                :aria-expanded="dropdownOpen === link.to"
+                @click="dropdownOpen = dropdownOpen === link.to ? null : link.to"
+              >
+                {{ link.label }}
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 transition-transform" :class="{ 'rotate-180': dropdownOpen === link.to }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <Transition name="slide">
+                <div v-if="dropdownOpen === link.to" class="absolute left-1/2 -translate-x-1/2 top-full pt-3">
+                  <div class="min-w-[12rem] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] py-2 shadow-xl">
+                    <RouterLink
+                      v-for="child in link.children"
+                      :key="child.to"
+                      :to="child.to"
+                      class="block px-4 py-2 text-sm whitespace-nowrap text-[var(--color-muted)] hover:text-white hover:bg-white/5 transition-colors"
+                      :class="{ '!text-primary-400': route.path === child.to }"
+                      @click="dropdownOpen = null"
+                    >
+                      {{ child.label }}
+                    </RouterLink>
+                  </div>
+                </div>
+              </Transition>
+            </div>
+
+            <RouterLink
+              v-else
+              :to="link.to"
+              class="text-sm text-[var(--color-muted)] hover:text-white transition-colors"
+              :class="{ '!text-primary-400': isActive(link) }"
+            >
+              {{ link.label }}
+            </RouterLink>
+          </template>
 
           <!-- Language switch -->
           <div class="flex items-center gap-1 text-xs font-semibold tracking-widest border border-[var(--color-border)] rounded-md px-2.5 py-1">
@@ -77,16 +125,30 @@ const LOCALES = ['pl', 'en', 'de']
     <!-- Mobile menu -->
     <Transition name="slide">
       <div v-if="mobileOpen" class="md:hidden border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 space-y-2">
-        <RouterLink
-          v-for="link in links"
-          :key="link.to"
-          :to="link.to"
-          class="block py-2 text-[var(--color-muted)] hover:text-white transition-colors"
-          :class="{ 'text-primary-400': route.path === link.to }"
-          @click="mobileOpen = false"
-        >
-          {{ link.label }}
-        </RouterLink>
+        <template v-for="link in links" :key="link.to">
+          <div v-if="link.children">
+            <span class="block py-2 text-[var(--color-muted)]" :class="{ 'text-primary-400': isActive(link) }">{{ link.label }}</span>
+            <RouterLink
+              v-for="child in link.children"
+              :key="child.to"
+              :to="child.to"
+              class="block py-2 pl-4 border-l border-[var(--color-border)] ml-1 text-[var(--color-muted)] hover:text-white transition-colors"
+              :class="{ 'text-primary-400': route.path === child.to }"
+              @click="mobileOpen = false"
+            >
+              {{ child.label }}
+            </RouterLink>
+          </div>
+          <RouterLink
+            v-else
+            :to="link.to"
+            class="block py-2 text-[var(--color-muted)] hover:text-white transition-colors"
+            :class="{ 'text-primary-400': isActive(link) }"
+            @click="mobileOpen = false"
+          >
+            {{ link.label }}
+          </RouterLink>
+        </template>
 
         <!-- Lang switch mobile -->
         <div class="flex items-center gap-1.5 text-xs font-semibold tracking-widest pt-2 pb-1">
